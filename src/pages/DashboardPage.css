@@ -1,0 +1,15 @@
+.ant-layout{
+    min-height: 100vh;
+}
+
+.ant-layout-header span.trigger{
+    margin-left: 18px !important;
+}
+
+.logo h2{
+    color: #fff !important;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
