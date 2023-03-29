@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import 'antd/dist/reset.css';
 import './DashboardPage.css';
 import {
@@ -12,11 +12,13 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Col, Layout, Menu, Row, theme } from 'antd';
+import { Avatar, Col, Layout, Menu, message, Row, theme } from 'antd';
 import { Routes,Route,Outlet,useNavigate  } from 'react-router-dom';
 import Home from '../components/home/Home';
 import ListCategory from '../components/categories/ListCategory';
 import AddOrEditCategory from '../components/categories/AddOrEditCategory';
+import { useDispatch, useSelector } from 'react-redux';
+import { setError, setMessage } from '../redux/actions/commonAction';
 
 const { Header, Sider, Content } = Layout;
 
@@ -30,6 +32,22 @@ function DashboardPage() {
     const {
       token: { colorBgContainer },
     } = theme.useToken();
+
+    const msg = useSelector((state) => state.commonReducer.message)
+    const err = useSelector((state) => state.commonReducer.error)
+    const dispatch = useDispatch();
+
+    useEffect(()=> {
+      if(msg){
+        dispatch(setMessage(''))
+        message.success(msg);
+      }
+
+      if(err){
+        dispatch(setError(''))
+        message.error(err);
+      }
+    },[dispatch, msg, err])
     return ( 
       
         <Layout>
