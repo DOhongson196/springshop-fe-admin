@@ -1,7 +1,7 @@
 import { Component } from "react";
 import withRouter from "../../helpers/withRouter";
 import ContentHeader from "../../common/ContentHeader";
-import {Table,Space,Button,Tag, Modal} from 'antd';
+import {Table,Space,Button,Tag, Modal, Skeleton} from 'antd';
 import Column from 'antd/lib/table/Column'
 import {EditOutlined,DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { connect } from "react-redux";
@@ -56,7 +56,22 @@ class ListCategory extends Component {
   }
   render() {
     const {navigate} = this.props.router;
-    const {categories} = this.props
+    const {categories , isLoading} = this.props
+
+    if (isLoading) {
+      return (
+        <>
+                <ContentHeader
+                    navigate={navigate}
+                    title = "List Categories"
+                    className="site-page-header"
+                >
+                </ContentHeader>
+                <Skeleton activer />
+        </>
+      )
+    }
+
     return (
 
             <div>
@@ -136,7 +151,8 @@ class ListCategory extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  categories: state.categoryReducer.categories
+  categories: state.categoryReducer.categories,
+  isLoading: state.commonReducer.isLoading
 })
 
 const mapDispatchToProps = {
