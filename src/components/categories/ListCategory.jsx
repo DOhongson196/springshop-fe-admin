@@ -5,19 +5,12 @@ import {Table,Space,Button,Tag, Modal, Skeleton} from 'antd';
 import Column from 'antd/lib/table/Column'
 import {EditOutlined,DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { connect } from "react-redux";
-import {getCategories,clearCategoryState} from "../../redux/actions/categoryAction"
+import {getCategories,clearCategoryState,deleteCategory} from "../../redux/actions/categoryAction"
 class ListCategory extends Component {
   constructor(){
     super()
 
     this.state = {
-      // dataSource : [
-      //   {categoryId: 1,name: 'Computer', status: 0},
-      //   {categoryId: 2,name: 'Laptop', status: 0},
-      //   {categoryId: 3,name: 'PC', status: 1},
-      //   {categoryId: 4,name: 'Mouse', status: 1},
-      //   {categoryId: 5,name: 'Server', status: 0},
-      // ],
       category: {}
     }
   }
@@ -34,10 +27,14 @@ class ListCategory extends Component {
 
   editCategory = (category) => {
     console.log(category);
+
+    const {navigate} = this.props.router;
+
+    navigate('/categories/update/' + category.id);
   }
 
   deleteCategory = () => {
-    console.log(this.state.category);
+    this.props.deleteCategory(this.state.category.id);
   }
   openDeleteConfirmModal = (category) => {
     this.setState({...this.state, category: category});
@@ -109,7 +106,7 @@ class ListCategory extends Component {
                   render={(_,{status})=>{
                     let color = 'volcano'
                     let name = "In-visible"
-                    if(status===0){
+                    if(status==="Visible"){
                       color = 'green'
                       name = 'Visible'
                     }
@@ -158,6 +155,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getCategories,
   clearCategoryState,
+  deleteCategory,
 }
 
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(ListCategory));

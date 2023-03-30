@@ -8,4 +8,13 @@ export default class CategoryService {
     getCategories = async() => {
         return await axios.get(API_CATEGORY);
     }
+    deleteCategory = async(id) => {
+        return await axios.delete(API_CATEGORY + "/" + id);
+    }
+    getCategory = async(id) => {
+        return await axios.get(API_CATEGORY + "/" + id + "/get");
+    }
+    updateCategory = async(id, category) => {
+        return await axios.patch(API_CATEGORY + "/" + id, category);
+    }
 }
