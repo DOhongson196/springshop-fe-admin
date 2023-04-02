@@ -19,6 +19,7 @@ import ListCategory from '../components/categories/ListCategory';
 import AddOrEditCategory from '../components/categories/AddOrEditCategory';
 import { useDispatch, useSelector } from 'react-redux';
 import { setError, setMessage } from '../redux/actions/commonAction';
+import ListManufacturers from '../components/manufacturers/ListManufacturers';
 
 const { Header, Sider, Content } = Layout;
 
@@ -90,6 +91,31 @@ function DashboardPage() {
                     icon: <MdFormatListBulleted />,
                     label: 'List Categories',
                     onClick: () => navigate('/categories/list'),
+                  },
+              ]
+            },
+            {
+              key: '211',
+              icon: <MdCategory />,
+              label: 'Other',
+              children: [
+                {
+                    key: '212',
+                    icon: <MdFormatListBulleted/>,
+                    label: 'List Manufacturers',
+                    onClick: () => navigate('/manufactures/list'),
+                  },
+                  {
+                    key: '213',
+                    icon: <MdFormatListBulleted />,
+                    label: 'List Coutries',
+                    onClick: () => navigate('/coutries/list'),
+                  },
+                  {
+                    key: '214',
+                    icon: <MdFormatListBulleted />,
+                    label: 'List Provinces',
+                    onClick: () => navigate('/provinces/list'),
                   },
               ]
             },
@@ -176,6 +202,7 @@ function DashboardPage() {
               <Route path="/categories/add" element={<AddOrEditCategory key='a'/>}></Route>
               <Route path="/categories/update/:id" element={<AddOrEditCategory key='u' />}></Route>
               <Route path="/categories/list" element={<ListCategory />}></Route>
+              <Route path="/manufactures/list" element={<ListManufacturers />}></Route>
             </Routes>
             <Outlet></Outlet> 
           </div>

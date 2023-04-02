@@ -1,6 +1,6 @@
 import { Component } from "react";
 import withRouter from "../../helpers/withRouter";
-import ContentHeader from "../../common/ContentHeader";
+import ContentHeader from "../common/ContentHeader";
 import {Table,Space,Button,Tag, Modal, Skeleton} from 'antd';
 import Column from 'antd/lib/table/Column'
 import {EditOutlined,DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'

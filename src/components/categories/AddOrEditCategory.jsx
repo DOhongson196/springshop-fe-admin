@@ -1,7 +1,7 @@
 import withRouter from "../../helpers/withRouter";
 import {Divider,Row,Col,Form,Input,Select,Button, Popconfirm} from 'antd';
 import React, { Component } from "react";
-import ContentHeader from "../../common/ContentHeader";
+import ContentHeader from "../common/ContentHeader";
 import { connect } from "react-redux";
 import {insertCategory,getCategory,clearCategory,updateCategory} from "../../redux/actions/categoryAction"
 
