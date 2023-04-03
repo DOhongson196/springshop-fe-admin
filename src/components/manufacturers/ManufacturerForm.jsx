@@ -78,7 +78,7 @@ class ManufacturerForm extends Component {
           initialValue={manufacturer.name}
           rules={[{ required: true,min: 2, message: 'Please input name!' }]}
         >
-          <Input readOnly />
+          <Input />
         </Form.Item>
         <Form.Item
           name="logoFile"
@@ -95,7 +95,7 @@ class ManufacturerForm extends Component {
           accept=".jpg,.png,.gif"
           maxCount={1}
           beforeUpload={()=>false}>
-            <Button type="primary">Browse</Button>
+            <Button type="primary">Upload</Button>
           </Upload>
         </Form.Item>
         <Divider></Divider>

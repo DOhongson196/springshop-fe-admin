@@ -4,6 +4,8 @@ import withRouter from "../../helpers/withRouter";
 import ContentHeader from "../common/ContentHeader";
 import ManufacturerForm from "./ManufacturerForm";
 import ManufacturerList from "./ManufacturerList";
+import {insertManufacturer,getManufacturers} from "../../redux/actions/manufacturerAction"
+import { connect } from "react-redux";
 
 
 
@@ -14,12 +16,20 @@ class ListManufacturers extends Component {
             open: false,
         }
     }
+    componentDidMount = () => {
+        this.props.getManufacturers();
+
+        console.log("did mount");
+    }
     onCreate = (values) => {
         console.log(values);
+
+        this.props.insertManufacturer(values);
     }
     render(){
         const {navigate} = this.props.router;
         const {open} = this.state;
+        const {manufacturers} = this.props;
         return (
             
             <div>
@@ -42,7 +52,7 @@ class ListManufacturers extends Component {
       </Button>
                 </Col>
             </Row>
-                <ManufacturerList/>
+                <ManufacturerList dataSource={manufacturers}/>
 
 
       <ManufacturerForm
@@ -58,4 +68,14 @@ class ListManufacturers extends Component {
 
 }
 
-export default withRouter(ListManufacturers);
+const mapStateToProps = (state) => ({
+    manufacturers: state.manufacturerReducer.manufacturers
+
+})
+
+const mapDispatchToProps = {
+    insertManufacturer,
+    getManufacturers,
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListManufacturers))

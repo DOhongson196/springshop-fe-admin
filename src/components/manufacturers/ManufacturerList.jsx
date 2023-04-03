@@ -2,6 +2,7 @@ import { Component } from "react";
 import {Table,Space,Button, Image} from 'antd';
 import Column from 'antd/lib/table/Column'
 import {EditOutlined,DeleteOutlined } from '@ant-design/icons'
+import ManufacturerService from "../../services/manufacturerService";
 
 
 
@@ -22,7 +23,7 @@ class ManufacturerList extends Component {
                   align = "center"
                   render={(_,record) =>(
                     <Space size="middle">
-                        <Image width='100%' src={record.logo}></Image>
+                        <Image width='100%' src={ManufacturerService.getManufacturerLogoUrl(record.logo)}></Image>
                     </Space>
                   )}
                   >
