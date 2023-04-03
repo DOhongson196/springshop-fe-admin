@@ -1,10 +1,10 @@
-import { Button, Col, Row } from "antd";
+import { Button, Col, Modal, Row } from "antd";
 import { Component } from "react";
 import withRouter from "../../helpers/withRouter";
 import ContentHeader from "../common/ContentHeader";
 import ManufacturerForm from "./ManufacturerForm";
 import ManufacturerList from "./ManufacturerList";
-import {insertManufacturer,getManufacturers} from "../../redux/actions/manufacturerAction"
+import {insertManufacturer,getManufacturers,deleteManufacturer} from "../../redux/actions/manufacturerAction"
 import { connect } from "react-redux";
 
 
@@ -14,6 +14,7 @@ class ListManufacturers extends Component {
         super(props);
         this.state = {
             open: false,
+            manufacturer: {}
         }
     }
     componentDidMount = () => {
@@ -25,6 +26,24 @@ class ListManufacturers extends Component {
         console.log(values);
 
         this.props.insertManufacturer(values);
+    }
+    deleteManufacturer = ()  => {
+        this.props.deleteManufacturer(this.state.manufacturer.id);
+
+        console.log("delete manufacturer");
+    }
+    onDelete = (value) => {
+        this.setState({...this.state,manufacturer: value})
+
+        const message = "Do you want to delete this manufacturer " + value.name
+
+        Modal.confirm({
+            title: "Confirm",
+            content: message,
+            onOk: this.deleteManufacturer,
+            okText: "Delete",
+            cancelText: "Cancel",
+        })
     }
     render(){
         const {navigate} = this.props.router;
@@ -52,7 +71,7 @@ class ListManufacturers extends Component {
       </Button>
                 </Col>
             </Row>
-                <ManufacturerList dataSource={manufacturers}/>
+                <ManufacturerList dataSource={manufacturers} onDelete={this.onDelete}/>
 
 
       <ManufacturerForm
@@ -76,6 +95,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     insertManufacturer,
     getManufacturers,
+    deleteManufacturer,
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListManufacturers))

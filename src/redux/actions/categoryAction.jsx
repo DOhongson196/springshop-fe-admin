@@ -132,7 +132,7 @@ export const deleteCategory = (id) => async (dispatch) => {
     const service = new CategoryService();
 
     try {
-        console.log('delete categories');
+        console.log('delete category');
         dispatch({
             type: COMMON_LOADING_SET,
             payload: true,

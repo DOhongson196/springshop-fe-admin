@@ -52,13 +52,13 @@ class ManufacturerList extends Component {
                   render={(_,record) => (
                     <Space size='large'>
                       <Button key={record.key} type = 'primary' 
-                        onClick={() => this.onEdit(record)}
+                        onClick={() => onEdit(record)}
                       >
                         <EditOutlined style={{marginRight: 12}}/>
                         Edit
                       </Button>
                       <Button key={record.key} danger type = 'primary'
-                        onClick={() => this.onDelete(record)}
+                        onClick={() => onDelete(record)}
                       >
                         <DeleteOutlined style={{marginRight: 12}}/>
                         Delete

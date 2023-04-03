@@ -1,6 +1,6 @@
 
 import ManufacturerService from "../../services/manufacturerService";
-import { COMMON_ERROR_SET, COMMON_LOADING_SET, COMMON_MESSEAGE_SET, MANUFACTURERS_SET, MANUFACTURER_APPEND, MANUFACTURER_SET } from "./actionTypes";
+import { COMMON_ERROR_SET, COMMON_LOADING_SET, COMMON_MESSEAGE_SET, MANUFACTURERS_SET, MANUFACTURER_APPEND, MANUFACTURER_DELETE, MANUFACTURER_SET } from "./actionTypes";
 
 
 export const insertManufacturer = (manufacturer) => async (dispatch) =>{
@@ -68,6 +68,48 @@ export const getManufacturers = () => async (dispatch) => {
             dispatch({
                 type: MANUFACTURERS_SET,
                 payload: response.data
+            })
+        }else{
+            dispatch({
+                type: COMMON_ERROR_SET,
+                payload: response.message,
+            })
+        }
+    } catch (error) {
+        console.log("Error" + error);
+        dispatch({
+            type: COMMON_ERROR_SET,
+            payload: error.response.data ? error.response.data.message : error.message,
+        })
+    }
+    dispatch({
+        type: COMMON_LOADING_SET,
+        payload: false,
+    })
+}
+
+export const deleteManufacturer = (id) => async (dispatch) => {
+    const service = new ManufacturerService();
+
+    try {
+        console.log('delete manufacturer');
+        dispatch({
+            type: COMMON_LOADING_SET,
+            payload: true,
+        })
+
+        const response = await service.deleteManufacturer(id);
+
+        console.log(response);
+
+        if(response.status === 200) {
+            dispatch({
+                type: MANUFACTURER_DELETE,
+                payload: id
+            })
+            dispatch({
+                type: COMMON_MESSEAGE_SET,
+                payload: response.data,
             })
         }else{
             dispatch({
