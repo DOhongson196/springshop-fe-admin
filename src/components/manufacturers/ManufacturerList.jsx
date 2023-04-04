@@ -14,6 +14,7 @@ class ManufacturerList extends Component {
                   dataSource={dataSource}
                   size = "middle"
                   rowKey= "id"
+                  pagination={false}
                 >
                                       <Column
                   title = "Logo"

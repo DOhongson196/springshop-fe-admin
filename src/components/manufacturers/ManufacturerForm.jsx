@@ -1,5 +1,6 @@
 import { Button, Divider, Form, Image, Input, Modal, Upload } from "antd";
 import { Component, createRef } from "react"
+import ManufacturerService from "../../services/manufacturerService";
 
 
 class ManufacturerForm extends Component {
@@ -38,12 +39,23 @@ class ManufacturerForm extends Component {
     }
     render(){
         const {open,onCreate,onCancel} = this.props;
-        const {manufacturer} = this.state;
+        const {manufacturer} = this.props;
+        const logoUrl = ManufacturerService.getManufacturerLogoUrl(manufacturer.logo);
+        const initialLogo = {
+          url: logoUrl,
+          uid: manufacturer.logo
+        }
+        let title = 'Create a new manufacturer'
+        let okText = 'Create'
+        if(manufacturer.id){
+          title = 'Update manufacturer'
+          okText = 'Update'
+        }
         return(
             <Modal
       open={open}
-      title="Create a new collection"
-      okText="Create"
+      title= {title}
+      okText={okText}
       cancelText="Cancel"
       onCancel={onCancel}
       onOk={() => {
@@ -63,6 +75,7 @@ class ManufacturerForm extends Component {
         layout="vertical"
         name="form_in_modal"
         initialValues={{ modifier: 'public' }}
+        key={'f' +manufacturer.id + manufacturer.name}
       >
         <Form.Item
           name="id"
@@ -84,7 +97,7 @@ class ManufacturerForm extends Component {
           name="logoFile"
           label="Logo"
           initialValue={[
-            {url: ''}
+            initialLogo
           ]}
           rules={[{ required: true }]}
           valuePropName="fileList"
