@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setError, setMessage } from '../redux/actions/commonAction';
 import ListManufacturers from '../components/manufacturers/ListManufacturers';
 import UploadImage from '../components/products/UploadImage';
+import AddOrEditProduct from '../components/products/AddOrEditProduct';
 
 const { Header, Sider, Content } = Layout;
 
@@ -225,6 +226,7 @@ function DashboardPage() {
               <Route path="/categories/list" element={<ListCategory />}></Route>
               <Route path="/manufactures/list" element={<ListManufacturers />}></Route>
               <Route path="/products/upload" element={<UploadImage />}></Route>
+              <Route path="/products/add" element={<AddOrEditProduct/>}></Route>
             </Routes>
             <Outlet></Outlet> 
           </div>
