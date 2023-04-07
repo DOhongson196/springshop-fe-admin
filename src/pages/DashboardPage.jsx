@@ -20,6 +20,7 @@ import AddOrEditCategory from '../components/categories/AddOrEditCategory';
 import { useDispatch, useSelector } from 'react-redux';
 import { setError, setMessage } from '../redux/actions/commonAction';
 import ListManufacturers from '../components/manufacturers/ListManufacturers';
+import UploadImage from '../components/products/UploadImage';
 
 const { Header, Sider, Content } = Layout;
 
@@ -102,7 +103,7 @@ function DashboardPage() {
                 {
                     key: '212',
                     icon: <MdFormatListBulleted/>,
-                    label: 'List Manufacturers',
+                    label: 'Upload Images',
                     onClick: () => navigate('/manufactures/list'),
                   },
                   {
@@ -123,6 +124,26 @@ function DashboardPage() {
               key: '3',
               icon: <MdOutlineInventory2/>,
               label: 'Products',
+              children: [
+                {
+                    key: '312',
+                    icon: <MdFormatListBulleted/>,
+                    label: 'Upload Images',
+                    onClick: () => navigate('/products/upload'),
+                  },
+                  {
+                    key: '313',
+                    icon: <MdFormatListBulleted />,
+                    label: 'Add Product',
+                    onClick: () => navigate('/products/add'),
+                  },
+                  {
+                    key: '314',
+                    icon: <MdFormatListBulleted />,
+                    label: 'List Products',
+                    onClick: () => navigate('/products/list'),
+                  },
+              ]
             },
             {
                 key: '4',
@@ -203,6 +224,7 @@ function DashboardPage() {
               <Route path="/categories/update/:id" element={<AddOrEditCategory key='u' />}></Route>
               <Route path="/categories/list" element={<ListCategory />}></Route>
               <Route path="/manufactures/list" element={<ListManufacturers />}></Route>
+              <Route path="/products/upload" element={<UploadImage />}></Route>
             </Routes>
             <Outlet></Outlet> 
           </div>
