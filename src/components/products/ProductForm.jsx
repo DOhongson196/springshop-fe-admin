@@ -4,6 +4,8 @@ import React, { Component } from "react"
 import {UploadOutlined} from '@ant-design/icons'
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import ReactQuill from "react-quill";
+import  "react-quill/dist/quill.snow.css";
 
 class ProductForm extends Component {
     form = React.createRef();
@@ -140,7 +142,7 @@ class ProductForm extends Component {
                             name="brief"
                             initialValue={product.brief}
                             >
-                                <Input></Input>
+                                <ReactQuill theme="snow"></ReactQuill>
                             </Form.Item>
                         </Col>
                         <Col md={24}>
