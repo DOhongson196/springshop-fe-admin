@@ -1,4 +1,4 @@
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Select } from "antd";
+import { Button, Checkbox, Col, DatePicker, Divider, Form, Input, InputNumber, message, Row, Select } from "antd";
 import Upload from "antd/es/upload/Upload";
 import React, { Component } from "react"
 import {UploadOutlined} from '@ant-design/icons'
@@ -17,7 +17,23 @@ class ProductForm extends Component {
         }
     }
     goNext = () => {
-        this.props.goNext({});
+        this.form.current
+        .validateFields()
+        .then((values) =>{
+            console.log(values);
+            console.log(values.manufacturerDate);
+
+            const newValues = {
+                ...values,
+                description: this.state.descriptionCKData,
+                manufacturerDate: values.manufacturerDate.format('YYYY-MM-DD'),
+                //image: values.image[0].fileName ? values.image[0] : values.image[0].response
+            }
+            this.props.goNext(newValues);
+        }).catch((info) => {
+            console.log(info);
+            message.error("Data validation error")
+        })
     }
     render(){
         const {product} = this.props;
@@ -44,6 +60,8 @@ class ProductForm extends Component {
                             label = 'Name'
                             name="name"
                             initialValue={product.name}
+                            rules = {[{required: true,  min: 2}]}
+                            hasFeedback
                             >
                                 <Input></Input>
                             </Form.Item>
@@ -51,25 +69,58 @@ class ProductForm extends Component {
                             <Form.Item
                             label = 'Quantity'
                             name="quantity"
-                            initialValue={product.quantity}
+                            initialValue={product.name}
+                            rules = {[{required: true}]}
+                            hasFeedback
                             >
-                                <Input ></Input>
+                                <InputNumber min={0}
+                                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                                style = {{width: "100%"}}
+                                ></InputNumber>
                             </Form.Item>
 
                             <Form.Item
                             label = 'Price'
                             name="price"
                             initialValue={product.price}
+                            rules = {[{required: true}]}
+                            hasFeedback
                             >
-                                <Input ></Input>
+                                <InputNumber min={0}
+                                formatter = {(value)=>
+                                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                }
+                                parser= {(value)=> value.replace(/$\s?|(,*)/g,'')}
+                                style = {{width: "100%"}}
+                                addonAfter = {'$'}
+                                ></InputNumber>
                             </Form.Item>
 
                             <Form.Item
+                            
                             label = 'Discount'
                             name="discount"
                             initialValue={product.discount}
                             >
-                                <Input ></Input>
+                             <InputNumber
+                                      min={0}
+                                      max={100}
+                                      formatter={(value) => `${value}`}
+                                      parser={(value) => value.replace('%', '')}
+                                      style = {{width: "100%"}}
+                                      addonAfter = {'%'}
+                                ></InputNumber>
+                            </Form.Item>
+
+                            <Form.Item
+                            
+                            label ='Featured'
+                            name="isFeatured"
+                            initialValue={product.isFeatured}
+                            >
+
+                                <Checkbox></Checkbox>
                             </Form.Item>
                         </Col>
                         <Col md={1}>
@@ -79,6 +130,8 @@ class ProductForm extends Component {
                         <Form.Item
                             label = 'Status'
                             name="status"
+                            rules = {[{required: true}]}
+                            hasFeedback
                             initialValue={product.status}
                             >
                                 <Select placeholder="Select product status">
@@ -92,6 +145,8 @@ class ProductForm extends Component {
                         <Form.Item
                             label = 'Category'
                             name="categoryId"
+                            rules = {[{required: true}]}
+                            hasFeedback
                             initialValue={product.categoryId}
                             >
                                 <Select placeholder="Select Category">
@@ -103,6 +158,8 @@ class ProductForm extends Component {
                         <Form.Item
                             label = 'Manufacturer'
                             name="manufacturerId"
+                            rules = {[{required: true}]}
+                            hasFeedback
                             initialValue={product.manufacturerId}
                             >
                                 <Select placeholder="Select Manufacturer">
@@ -113,7 +170,9 @@ class ProductForm extends Component {
 
                         <Form.Item
                             label = 'Manufacturer Date'
-                            name="manufacturerId"
+                            name="manufacturerDate"
+                            rules = {[{required: true}]}
+                            hasFeedback
                             initialValue={product.manufacturerDate}
                             >
                                 <DatePicker></DatePicker>
@@ -122,6 +181,8 @@ class ProductForm extends Component {
                         <Form.Item
                             label = 'Main Image'
                             name="image"
+                            rules = {[{required: true}]}
+                            hasFeedback
                             initialValue={product.image ? [{...product.image}] : []}
                             >
                                 <Upload
@@ -141,6 +202,8 @@ class ProductForm extends Component {
                             label = 'Brief'
                             name="brief"
                             initialValue={product.brief}
+                            hasFeedback
+                            rules = {[{required: true}]}
                             >
                                 <ReactQuill theme="snow"></ReactQuill>
                             </Form.Item>
@@ -150,6 +213,8 @@ class ProductForm extends Component {
                             label = 'Description'
                             name="description"
                             initialValue={descriptionCKData}
+                            hasFeedback
+                            rules = {[{required: true}]}
                             >
                                 <CKEditor
                                 editor={ClassicEditor}
