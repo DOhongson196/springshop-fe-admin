@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, DatePicker, Divider, Form, Input, InputNumber, message, Row, Select } from "antd";
+import { Button, Checkbox, Col, DatePicker, Divider, Form, Image, Input, InputNumber, message, Row, Select } from "antd";
 import Upload from "antd/es/upload/Upload";
 import React, { Component } from "react"
 import {UploadOutlined} from '@ant-design/icons'
@@ -6,6 +6,8 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import ReactQuill from "react-quill";
 import  "react-quill/dist/quill.snow.css";
+import {MdOutlineCategory} from 'react-icons/md'
+import ManufacturerService from "../../services/manufacturerService";
 
 class ProductForm extends Component {
     form = React.createRef();
@@ -36,7 +38,7 @@ class ProductForm extends Component {
         })
     }
     render(){
-        const {product} = this.props;
+        const {product, categories, manufacturers} = this.props;
         const {descriptionCKData } = this.state;
         return (
             <>
@@ -120,7 +122,7 @@ class ProductForm extends Component {
                             initialValue={product.isFeatured}
                             >
 
-                                <Checkbox></Checkbox>
+                                <Checkbox ></Checkbox>
                             </Form.Item>
                         </Col>
                         <Col md={1}>
@@ -149,9 +151,12 @@ class ProductForm extends Component {
                             hasFeedback
                             initialValue={product.categoryId}
                             >
-                                <Select placeholder="Select Category">
-                                    <Select.Option value = "inStock">Computer</Select.Option>
-                                    <Select.Option value = "outOfStock">Laptop</Select.Option>
+                                <Select placeholder="Select Category" suffixIcon={<MdOutlineCategory/>}>
+                                    {categories && categories.map((item) => (
+                                        <Select.Option value = {item.id} key={item.id}>
+                                            {item.name}
+                                        </Select.Option>
+                                    ))}
                                 </Select>
                         </Form.Item>
 
@@ -163,8 +168,15 @@ class ProductForm extends Component {
                             initialValue={product.manufacturerId}
                             >
                                 <Select placeholder="Select Manufacturer">
-                                    <Select.Option value = "inStock">FPT</Select.Option>
-                                    <Select.Option value = "outOfStock">Dell</Select.Option>
+                                {manufacturers && manufacturers.map((item) => (
+                                        <Select.Option value = {item.id} key={item.id}>
+                                            <Image
+                                                src={ManufacturerService.getManufacturerLogoUrl(item.logo)}
+                                                height = {32}
+                                            ></Image>
+                                            {item.name}
+                                        </Select.Option>
+                                    ))}
                                 </Select>
                         </Form.Item>
 
