@@ -1,4 +1,4 @@
-import { Button, Col, Divider, message, Row, Space, Steps} from "antd";
+import { Button, Col, Divider, message, notification, Row, Space, Steps} from "antd";
 import { Component } from "react";
 import withRouter from "../../helpers/withRouter";
 import ContentHeader from "../common/ContentHeader";
@@ -7,6 +7,9 @@ import UploadImage from "./UploadImage";
 import {SaveOutlined} from "@ant-design/icons"
 import CategoryService from "../../services/categoryService";
 import ManufacturerService from "../../services/manufacturerService";
+import { connect } from "react-redux";
+import { insertProduct} from "../../redux/actions/productAction"
+import ProductService from "../../services/productService";
 
 class AddOrEditProduct extends Component {
     constructor(props){
@@ -14,6 +17,11 @@ class AddOrEditProduct extends Component {
 
         this.state = {
             step: 0,
+            product: {},
+            productImages: [],
+            updatedProductImages: [],
+            categories: [],
+            manufacturers: [],
         }
     }
     goNext = (values) => {
@@ -22,11 +30,75 @@ class AddOrEditProduct extends Component {
     goPrevious = () => {
         this.setState({...this.state, step:0})
     }
-    saveProduct = () => {
-        console.log("Save Product");
-    }
     componentDidMount = () => {
         this.loadData();
+    }
+    onUpdateFileList = (fileList) => {
+        console.log("Update File List", fileList);
+
+        this.setState({...this.state,updatedProductImages: fileList})
+    }
+    static getDerivedStateFromProps(nextProps,prevState){
+        if(nextProps.product && nextProps.product.images && nextProps.product.images.length > 0){
+            let productImages = []
+
+            if(nextProps.product.images){
+                productImages = nextProps.product.images.map((item) => ({
+                    ...item,
+                    uid: item.id,
+                    url: ProductService.getProductImageUrl(item.fileName),
+                    status: "done"
+                }))
+            }
+            return {...prevState,productImages: productImages}
+        }
+        return null
+    }
+
+    saveProduct = () => {
+        const {product, productImages,updatedProductImages} = this.state
+
+        console.log('Save product')
+        const newProduct = {
+            ...product,
+            images: updatedProductImages && updatedProductImages.length > 0 ? 
+            updatedProductImages.map(item => {
+                if(item.id){
+                    return {...item}
+                }
+
+                return item.response;
+            }) :
+            productImages.map(item => {
+                if(item.id){
+                    return {...item}
+                }
+
+                return item.response;
+            })
+        }
+        console.log(newProduct)
+        if(newProduct.images && newProduct.images.length>0){
+            const uploading  = newProduct.images.filter(item => item.status !== 'done')
+            if(uploading && uploading.length>0){
+                notification.error({
+                    message: "Error uploading",
+                    description: "Product images uploading, pls wait",
+                    duration: 10
+                })
+                return
+            }
+        }else if(newProduct.images.length ===0){
+            notification.error({
+                message: "Error uploading",
+                description: "Product images are not chosen, pls chosen",
+                duration: 10
+            })
+            return
+        }
+        const {navigate} = this.props.router
+        this.setState({...this.state,product: {}, productImages: []})
+        this.props.insertProduct(newProduct,navigate)
     }
 
     loadData = async ()  => {
@@ -49,7 +121,7 @@ class AddOrEditProduct extends Component {
     }
     render(){
         const {navigate} = this.props.router;
-        const {step, categories , manufacturers} = this.state;
+        const {step, categories , manufacturers,productImages} = this.state;
         const {product} = this.props;
         let title = "Add products";
         return (
@@ -97,7 +169,10 @@ class AddOrEditProduct extends Component {
                                 <Divider></Divider>
                                 <Row>
                                     <Col md={24}>
-                                        <UploadImage></UploadImage>
+                                        <UploadImage
+                                        onUpdateFileList={this.onUpdateFileList}
+                                        fileList = {productImages}
+                                        />
                                         <Divider></Divider>
                                         <div>
                                             <Space>
@@ -125,4 +200,12 @@ class AddOrEditProduct extends Component {
     }
 }
 
-export default withRouter(AddOrEditProduct);
+const mapStateToProps = (state) => ({
+    product: state.productReducer.product,
+})
+
+const mapDispatchToProps = {
+    insertProduct,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AddOrEditProduct));

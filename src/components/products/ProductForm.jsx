@@ -8,6 +8,7 @@ import ReactQuill from "react-quill";
 import  "react-quill/dist/quill.snow.css";
 import {MdOutlineCategory} from 'react-icons/md'
 import ManufacturerService from "../../services/manufacturerService";
+import ProductService from "../../services/productService";
 
 class ProductForm extends Component {
     form = React.createRef();
@@ -18,24 +19,56 @@ class ProductForm extends Component {
             descriptionCKData: ''
         }
     }
+    componentDidMount = () => {
+        this.setState({
+            ...this.state,
+            descriptionCKData: this.props.product.description
+        })
+    }
+    static getDerivedStateFromProps(nextProps,prevState){
+        if(nextProps.product.description && !prevState.descriptionCKData){
+            return{
+                ...prevState,
+                descriptionCKData: nextProps.product.description
+            }
+        }
+        return null;
+    }
     goNext = () => {
         this.form.current
         .validateFields()
         .then((values) =>{
-            console.log(values);
-            console.log(values.manufacturerDate);
-
             const newValues = {
                 ...values,
                 description: this.state.descriptionCKData,
                 manufacturerDate: values.manufacturerDate.format('YYYY-MM-DD'),
-                //image: values.image[0].fileName ? values.image[0] : values.image[0].response
+                image: values.image[0].fileName ? values.image[0] : values.image[0].response
             }
+            console.log(newValues)
             this.props.goNext(newValues);
         }).catch((info) => {
             console.log(info);
             message.error("Data validation error")
         })
+    }
+    handleImageRemoved = (info) =>{
+        console.log('removed')
+
+        if(info.fileName){
+            ProductService.deleteProductImage(info.fileName)
+        }else if(info.response && info.response.fileName){
+            ProductService.deleteProductImage(info.response.fileName)
+        }
+    }
+    normFile = (e) =>{
+        if(Array.isArray(e)){
+            return e
+        }
+        if(e.fileList.length >1){
+            return [e.fileList[0]];
+        }
+
+        return e && e.fileList;
     }
     render(){
         const {product, categories, manufacturers} = this.props;
@@ -120,6 +153,7 @@ class ProductForm extends Component {
                             label ='Featured'
                             name="isFeatured"
                             initialValue={product.isFeatured}
+                            valuePropName="checked"
                             >
 
                                 <Checkbox ></Checkbox>
@@ -137,10 +171,10 @@ class ProductForm extends Component {
                             initialValue={product.status}
                             >
                                 <Select placeholder="Select product status">
-                                    <Select.Option value = "inStock">In Stock</Select.Option>
-                                    <Select.Option value = "outOfStock">Out Of Stock</Select.Option>
-                                    <Select.Option value = "discontinue">Discontinue</Select.Option>
-                                    <Select.Option value = "onBackOrder">On Back Order</Select.Option>
+                                    <Select.Option value = "InStock">In Stock</Select.Option>
+                                    <Select.Option value = "OutOfStock">Out Of Stock</Select.Option>
+                                    <Select.Option value = "Discontinue">Discontinue</Select.Option>
+                                    <Select.Option value = "OnBackOrder">On Back Order</Select.Option>
                                 </Select>
                         </Form.Item>
 
@@ -195,12 +229,20 @@ class ProductForm extends Component {
                             name="image"
                             rules = {[{required: true}]}
                             hasFeedback
-                            initialValue={product.image ? [{...product.image}] : []}
+                            initialValue={product.image ? [{...product.image,
+                            url: ProductService.getProductImageUrl(
+                                product.image.fileName
+                            )
+                            }] : []}
+                            valuePropName="fileList"
+                            getValueFromEvent={this.normFile}
                             >
                                 <Upload
                                 listType="picture"
                                 accept=".jpg,.png,.gif"
                                 maxCount={1}
+                                onRemove = {this.handleImageRemoved}
+                                action={ProductService.getProductImageUploadUrl()}
                                 >
                                     <Button icon={<UploadOutlined/>}></Button>
                                 </Upload>

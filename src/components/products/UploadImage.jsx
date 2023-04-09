@@ -13,7 +13,7 @@ const getBase64 = (file) => {
     })
 }
 
-function UploadImage() {
+const UploadImage = (props) => {
     const [previewOpen,setPreviewOpen] = useState(false)
     const [previewImage,setpreviewImage] = useState('')
     const [previewTitle,setPreviewTitle] = useState('')
@@ -36,7 +36,7 @@ function UploadImage() {
     }
 
     const handleChange = (info) => {
-        //const {fileList} = info
+        const {fileList} = info
         const status = info.file.status
         if(status !== 'uploading'){
             console.log(info.file)
@@ -44,10 +44,12 @@ function UploadImage() {
 
         if(status === 'done'){
             message.success(`${info.file.name} file uploaded successfully`)
-        }else{
-            message.error(`${info.file.name} file uploaded failed`)
+        }else if(status === 'removed'){
+            message.success(`${info.file.name} file is removed`)
+        }else if(status !== 'uploading'){
+            message.success(`${info.file.name} file uploaded failed`)
         }
-        //props.onUploadFileList(fileList.slice());
+        props.onUpdateFileList(fileList.slice());
     }
 
     const handleRemove = (info) => {
@@ -65,14 +67,14 @@ function UploadImage() {
             <div style = {{marginTop: 12}}>Upload</div>
         </div>
     )
-    //const { fileList } = props;
+    const {fileList} = props
     return (
         <div>
             <Upload 
             name='file' 
             action='http://localhost:8080/api/v1/products/images/one'
             listType="picture-card"
-            defaultFileList={[]}
+            defaultFileList={fileList}
             multiple={true}
             onPreview = {handlePreview}
             onChange = {handleChange}

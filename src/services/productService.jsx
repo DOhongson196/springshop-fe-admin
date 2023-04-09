@@ -3,13 +3,8 @@ import { API_PRODUCT } from "./constant"
 
 export default class ProductService {
     insertProduct = async(product) => {
-        let formData = new FormData();
 
-        formData.append("name", product.name)
-        if(product.logoFile[0].originFileObj){
-            formData.append("logoFile", product.logoFile[0].originFileObj)
-        }
-        return await axios.post(API_PRODUCT, formData);
+        return await axios.post(API_PRODUCT, product);
     };
     getProducts = async() => {
         return await axios.get(API_PRODUCT);
@@ -32,7 +27,13 @@ export default class ProductService {
         }
         return await axios.patch(API_PRODUCT + "/" + id, formData);
     }
-    static getProductLogoUrl = (filename) => {
-        return API_PRODUCT + "/logo/" + filename;
+    static deleteProductImage = async (fileName) => {
+        await axios.delete(API_PRODUCT + "/images/" + fileName)
+    }
+    static getProductImageUrl = (filename) => {
+        return API_PRODUCT + "/images/" + filename;
+    }
+    static getProductImageUploadUrl = () => {
+        return API_PRODUCT + "/images/one";
     }
 }
